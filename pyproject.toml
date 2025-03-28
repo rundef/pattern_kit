@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pattern_kit"
+version = "1.0.0"
+description = "A modern Python library of reusable software design patterns."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+  { name="Mickael Burguet", email="bash88@email.com" }
+]
+keywords = [
+  "python", "design patterns", "software architecture",
+  "singleton", "factory", "object pool",
+  "observer", "event emitter", "pipeline",
+  "service locator", "creational patterns",
+  "behavioral patterns", "architectural patterns",
+  "developer tools", "pattern library"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Code Generators",
+]
+
+[project.urls]
+Homepage = "https://github.com/rundef/pattern_kit"
+Repository = "https://github.com/rundef/pattern_kit"
+Issues = "https://github.com/rundef/pattern_kit/issues"
+Documentation = "hhttps://pattern-kit.readthedocs.io"
+

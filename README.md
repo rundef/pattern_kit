@@ -1,5 +1,11 @@
 # pattern_kit
 
+![PyPI - Version](https://img.shields.io/pypi/v/pattern_kit) 
+[![No dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](https://pypi.org/project/pattern_kit)
+[![CI](https://github.com/rundef/pattern_kit/actions/workflows/ci.yml/badge.svg)](https://github.com/rundef/pattern_kit/actions/workflows/ci.yml)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/pattern_kit)
+
+
 > A modern Python library of reusable software design patterns.  
 > **Your blueprint for better Python architecture.**
 
@@ -17,7 +23,7 @@ While many examples exist online, `pattern_kit` is designed as a pip-installable
 - Supports both synchronous and asynchronous designs
 - Type-annotated and easy to extend
 - Ready-to-use patterns for real-world projects
-- [Sphinx-based documentation with examples and guides](https://pattern-kit.readthedocs.io)
+- [Extensive documentation with examples](https://pattern-kit.readthedocs.io)
 
 ---
 
@@ -27,15 +33,18 @@ While many examples exist online, `pattern_kit` is designed as a pip-installable
 pip install pattern_kit
 ```
 
+## Documentation
+
+Full usage examples and pattern guides are available in the official documentation: https://pattern-kit.readthedocs.io
+
 ## Quick Example
 
-```
-from pattern_kit.behavioral.observer import Observable, Observer
+```python
+from pattern_kit import Observable, Observer
 
 class MyObserver(Observer):
     def notify(self, event, data=None):
-        print(f"Received: {event} — {data}")
-
+        print(f"Received: {event} - {data}")
 
 obs = Observable()
 observer = MyObserver()
@@ -44,30 +53,6 @@ obs += observer
 obs.notify("on_data", {"price": 42})
 ```
 
-## Documentation
-
-Full usage examples and pattern guides are available in the official documentation: https://pattern-kit.readthedocs.io
-
-## Patterns Included
-
-- Behavioral:
-
-  - Observer
-
-  - EventEmitter
-
-  - Strategy
-
-- Creational:
-
-  - Singleton
-
-- Structural:
-
-  - Decorator
-
-More patterns will be added gradually with a focus on quality and documentation.
-
 ## Who is this for?
 
 Python developers who want to structure their codebase better and apply solid, proven software architecture principles.
@@ -75,7 +60,3 @@ Python developers who want to structure their codebase better and apply solid, p
 ## Contributing
 
 Contributions are welcome! Feel free to open issues, suggest improvements, or submit pull requests.
-
-## License
-
-MIT License — see LICENSE file.
