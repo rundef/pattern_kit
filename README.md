@@ -24,6 +24,7 @@ While many examples exist online, `pattern_kit` is designed as a pip-installable
 - Type-annotated and easy to extend
 - Ready-to-use patterns for real-world projects
 - [Extensive documentation with examples](https://pattern-kit.readthedocs.io)
+- Zero dependencies - pure Python, clean and portable
 
 ---
 
