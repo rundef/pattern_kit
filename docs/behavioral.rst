@@ -8,6 +8,7 @@ Behavioral patterns define how objects interact and communicate. They help encap
 .. toctree::
    :maxdepth: 2
 
+   behavioral/event
    behavioral/event_emitter
    behavioral/handler_pipeline
    behavioral/observer
