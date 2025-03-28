@@ -39,20 +39,42 @@ pip install pattern_kit
 
 Full usage examples and pattern guides are available in the [official documentation](https://pattern-kit.readthedocs.io/en/latest/)
 
-## Quick Example
+## Quick Examples
+
+### Singleton example (using decorator)
 
 ```python
-from pattern_kit import Observable, Observer
+from pattern_kit import singleton
 
-class MyObserver(Observer):
-    def notify(self, event, data=None):
-        print(f"Received: {event} - {data}")
+@singleton
+class Config:
+    def __init__(self, env="dev"):
+        self.env = env
 
-obs = Observable()
-observer = MyObserver()
+cfg = Config(env="prod")
+print(cfg.env)  # "prod"
 
-obs += observer
-obs.notify("on_data", {"price": 42})
+same = Config()
+assert same is cfg
+```
+
+### Event (multicast) example
+
+```python
+from pattern_kit import Event
+
+def listener(msg):
+    print(f"[sync] {msg}")
+
+async def async_listener(msg):
+    print(f"[async] {msg}")
+
+on_message = Event()
+on_message += listener
+on_message += async_listener
+
+on_message("hello!")         # fire-and-forget
+await on_message.call_async("world")  # fully awaited
 ```
 
 ## Who is this for?
