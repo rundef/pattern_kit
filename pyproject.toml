@@ -37,5 +37,5 @@ classifiers = [
 Homepage = "https://github.com/rundef/pattern_kit"
 Repository = "https://github.com/rundef/pattern_kit"
 Issues = "https://github.com/rundef/pattern_kit/issues"
-Documentation = "hhttps://pattern-kit.readthedocs.io"
+Documentation = "https://pattern-kit.readthedocs.io/en/latest/"
 

@@ -1,9 +1,10 @@
 # pattern_kit
 
-![PyPI - Version](https://img.shields.io/pypi/v/pattern_kit) 
+[![PyPI - Version](https://img.shields.io/pypi/v/pattern_kit)](https://pypi.org/project/pattern-kit/)
 [![No dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](https://pypi.org/project/pattern_kit)
 [![CI](https://github.com/rundef/pattern_kit/actions/workflows/ci.yml/badge.svg)](https://github.com/rundef/pattern_kit/actions/workflows/ci.yml)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/pattern_kit)
+[![Documentation](https://app.readthedocs.org/projects/pattern-kit/badge/?version=latest)](https://pattern-kit.readthedocs.io/en/latest/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/pattern_kit)](https://pypistats.org/packages/pattern-kit)
 
 
 > A modern Python library of reusable software design patterns.  
@@ -23,7 +24,7 @@ While many examples exist online, `pattern_kit` is designed as a pip-installable
 - Supports both synchronous and asynchronous designs
 - Type-annotated and easy to extend
 - Ready-to-use patterns for real-world projects
-- [Extensive documentation with examples](https://pattern-kit.readthedocs.io)
+- [Extensive documentation with examples](https://pattern-kit.readthedocs.io/en/latest/)
 - Zero dependencies - pure Python, clean and portable
 
 ---
@@ -36,7 +37,7 @@ pip install pattern_kit
 
 ## Documentation
 
-Full usage examples and pattern guides are available in the official documentation: https://pattern-kit.readthedocs.io
+Full usage examples and pattern guides are available in the [official documentation](https://pattern-kit.readthedocs.io/en/latest/)
 
 ## Quick Example
 
