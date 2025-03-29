@@ -26,6 +26,30 @@ Services can be:
 
   - `"key" in ServiceLocator`
 
+You can also inspect the currently registered services by printing the class:
+
+.. code-block:: python
+
+    class ConsoleLogger:
+        def log(self, msg): print(msg)
+
+    class FileLogger:
+        def __init__(self, path): self.path = path
+
+    class MySQLDatabase:
+        def connect(self): ...
+
+    ServiceLocator.register("Loggers", [ConsoleLogger(), FileLogger("logs.txt")])
+    ServiceLocator.register("Database", MySQLDatabase())
+
+    print(ServiceLocator)
+
+    # Output:
+    # Registered services:
+    # Database: object of type MySQLDatabase
+    # Loggers:
+    #   - object of type ConsoleLogger
+    #   - object of type FileLogger
 
 .. note::
 

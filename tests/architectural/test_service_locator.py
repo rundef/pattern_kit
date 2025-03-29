@@ -40,10 +40,21 @@ def test_unregister_service():
     assert "temp" not in ServiceLocator
 
 
-def test_clear_all_services():
+def test_str_and_clear_all_services():
     ServiceLocator.register("a", 1)
     ServiceLocator.register("b", 2)
+    ServiceLocator.register("c", ["test", DummyService(name=".")])
+
+    expected = """Registered services:
+a: object of type int
+b: object of type int
+c:
+  - object of type str
+  - object of type DummyService"""
+
+    assert str(ServiceLocator) == expected
 
     ServiceLocator.clear()
     assert not ServiceLocator.has("a")
     assert not ServiceLocator.has("b")
+    assert not ServiceLocator.has("c")

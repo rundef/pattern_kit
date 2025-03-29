@@ -7,6 +7,19 @@ class ServiceLocatorMeta(type):
     def __getitem__(cls, key: str) -> Any:
         return cls.get(key)
 
+    def __str__(cls):
+        lines = ["Registered services:"]
+        for key, val in cls.registered.items():
+            if isinstance(val, list):
+                lines.append(f"{key}:")
+                for item in val:
+                    lines.append(f"  - object of type {type(item).__name__}")
+            else:
+                lines.append(f"{key}: object of type {type(val).__name__}")
+        return "\n".join(lines)
+
+    __repr__ = __str__
+
 class ServiceLocator(metaclass=ServiceLocatorMeta):
     """
     A simple Service Locator pattern implementation.
