@@ -24,7 +24,7 @@ Services can be:
 
   - `ServiceLocator.has("key")`
 
-  - `"key" in ServiceLocator` (Pythonic syntax)
+  - `"key" in ServiceLocator`
 
 
 .. note::

@@ -9,17 +9,25 @@ from .creational.factory import Factory, register_factory
 from .creational.singleton import Singleton, singleton
 from .creational.object_pool import ObjectPool, AsyncObjectPool
 
+from .structural.delegate_mixin import DelegateMixin
+
 __all__ = [
+    # Architectural patterns
     "ServiceLocator",
 
+    # Behavioral patterns
     "Event",
     "EventEmitter",
     "Handler", "AsyncHandler", "HandlerPipeline",
     "Observable", "Observer", "AsyncObserver",
 
+    # Creational patterns
     "Factory", "register_factory",
     "Singleton", "singleton",
     "ObjectPool", "AsyncObjectPool",
+
+    # Structural patterns
+    "DelegateMixin",
 ]
 
 __version__ = '1.1.0'

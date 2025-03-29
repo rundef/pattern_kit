@@ -30,3 +30,4 @@ Contents
    architectural
    behavioral
    creational
+   structural
