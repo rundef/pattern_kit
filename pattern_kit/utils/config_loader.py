@@ -45,7 +45,8 @@ def build_object(cfg: dict[str, Any], class_map: dict[str, type] = None) -> Any:
 def build_from_config(
     config: dict[str, Union[dict, list]],
     class_map: dict[str, type] = None,
-    register: bool = False
+    register: bool = False,
+    register_raw: bool = False
 ) -> dict[str, Any]:
     """
     Build one or more objects from a config dictionary.
@@ -59,23 +60,24 @@ def build_from_config(
                        - lists of object configs
                        - raw values (passed through)
         class_map (dict[str, type], optional): Optional map of allowed classes.
-        register (bool): If True, registers each object with ServiceLocator[key].
+        register (bool): If True, registers each built object with ServiceLocator[key].
+        register_raw (bool): If True, also register raw (non-built) values in the ServiceLocator.
 
     Returns:
         dict[str, Any]: Dictionary of created or passed-through values by key.
     """
-    instances = {}
+    result = {}
     for key, entry in config.items():
         if isinstance(entry, dict) and "class" in entry:
-            instances[key] = build_object(entry, class_map)
+            result[key] = build_object(entry, class_map)
         elif isinstance(entry, list) and all(isinstance(e, dict) and "class" in e for e in entry):
-            instances[key] = [build_object(e, class_map) for e in entry]
-        elif ???:
-            instances[key] = entry  # Raw value, leave as-is
+            result[key] = [build_object(e, class_map) for e in entry]
         else:
-            continue
+            result[key] = entry
+            if not register_raw:
+                continue
 
         if register:
-            ServiceLocator.register(key, instances[key])
+            ServiceLocator.register(key, result[key])
 
-    return instances
+    return result

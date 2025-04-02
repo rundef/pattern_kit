@@ -48,10 +48,12 @@ def test_raw_config_passthrough():
             "logging_enabled": True
         }
     }
-    objs = build_from_config(cfg)
+    objs = build_from_config(cfg, register=True, register_raw=False)
 
     assert objs["Settings"]["timezone"] == "UTC"
     assert objs["Settings"]["logging_enabled"] is True
+
+    assert "Settings" not in ServiceLocator
 
 def test_mixed_config_with_service_registration():
     ServiceLocator.clear()
@@ -76,7 +78,7 @@ def test_mixed_config_with_service_registration():
         "DummyLogger": DummyLogger,
     }
 
-    objs = build_from_config(cfg, class_map=class_map, register=True)
+    objs = build_from_config(cfg, class_map=class_map, register=True, register_raw=True)
 
     assert "Broker" in ServiceLocator
     assert "Console" in ServiceLocator
