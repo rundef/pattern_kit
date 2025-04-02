@@ -41,11 +41,13 @@ html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'logo_only': False,
     'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
+    'navigation_with_keys': True,
+    'style_external_links': True,
 }
+

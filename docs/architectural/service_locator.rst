@@ -1,3 +1,5 @@
+.. _service_locator:
+
 Service Locator
 ===============
 

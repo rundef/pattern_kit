@@ -7,6 +7,7 @@ While many examples exist online, `pattern_kit` is designed as a pip-installable
 
 **Your blueprint for better Python architecture.**
 
+📦 GitHub: https://github.com/rundef/pattern_kit
 
 Features
 --------
@@ -31,3 +32,4 @@ Contents
    behavioral
    creational
    structural
+   utils

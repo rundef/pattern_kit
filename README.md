@@ -51,6 +51,12 @@ class Config:
     def __init__(self, env="dev"):
         self.env = env
 
+# you can also use this syntax:
+#
+# from pattern_kit import Singleton
+# class Config(Singleton):
+#     ...
+
 cfg = Config(env="prod")
 print(cfg.env)  # "prod"
 
