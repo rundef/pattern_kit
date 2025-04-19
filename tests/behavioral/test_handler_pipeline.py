@@ -1,4 +1,5 @@
-from pattern_kit import HandlerPipeline, Handler, AsyncHandler
+import pytest
+from pattern_kit import HandlerPipeline, Handler, AsyncHandler, StopPipeline
 
 
 # --- Dummy handlers for tests ---
@@ -16,8 +17,16 @@ class MultiplyHandler(Handler):
 class StopIfEvenHandler(Handler):
     def handle(self, data):
         if data % 2 == 0:
-            return None
+            raise StopPipeline()
         return data
+
+
+class StopWithValueHandler(Handler):
+    def __init__(self, value):
+        self.value = value
+    def handle(self, data):
+        # Demonstrates carrying back a payload
+        raise StopPipeline(self.value)
 
 
 class AlwaysSkipHandler(Handler):
@@ -37,85 +46,70 @@ class TrackingHandler(Handler):
         return data
 
 
-def test_pipeline_pass_result_false_short_circuit_false():
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=False)
+# --- sync tests ---
+
+def test_pipeline_pass_result_false():
+    pipeline = HandlerPipeline(pass_result=False)
     pipeline.add_handler(AddOneHandler())
     pipeline.add_handler(MultiplyHandler())
 
-    # Multiply will act on the original input (not AddOne's output)
-    result = pipeline.run(3)
-    assert result == 3 * 2  # Last handler defines result
+    # Multiply acts on the original input, not AddOne's output
+    assert pipeline.run(3) == 3 * 2
 
 
-def test_pipeline_pass_result_true_short_circuit_false():
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=True)
+def test_pipeline_pass_result_true():
+    pipeline = HandlerPipeline(pass_result=True)
     pipeline.add_handler(AddOneHandler())
     pipeline.add_handler(MultiplyHandler())
 
-    result = pipeline.run(3)
-    assert result == (3 + 1) * 2
+    assert pipeline.run(3) == (3 + 1) * 2
 
 
-def test_pipeline_pass_result_true_short_circuit_true_shortcircuits():
-    pipeline = HandlerPipeline(short_circuit=True, pass_result=True)
-    pipeline.add_handler(AddOneHandler())
-    pipeline.add_handler(StopIfEvenHandler())
-    pipeline.add_handler(MultiplyHandler())
+def test_pipeline_can_be_stopped_on_even():
+    pipeline = HandlerPipeline(pass_result=True)
+    pipeline += AddOneHandler()
+    pipeline += StopIfEvenHandler()
+    pipeline += MultiplyHandler()
 
-    result = pipeline.run(3)  # 3+1=4 → StopIfEvenHandler returns None → pipeline stops
-    assert result is None
+    # 3+1=4 -> StopIfEvenHandler raises StopPipeline -> pipeline.run returns None
+    assert pipeline.run(3) is None
 
-
-def test_pipeline_pass_result_true_short_circuit_true_no_short_circuit():
-    pipeline = HandlerPipeline(short_circuit=True, pass_result=True)
-    pipeline.add_handler(AddOneHandler())
-    pipeline.add_handler(MultiplyHandler())
-
-    result = pipeline.run(3)  # (3+1)*2 = 8
-    assert result == 8
+    # 2+1=3 -> no exception -> multiply -> 6
+    assert pipeline.run(2) == (2 + 1) * 2
 
 
-def test_pipeline_with_can_handle_filtering():
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=True)
-    pipeline.add_handler(AlwaysSkipHandler())
-    pipeline.add_handler(AddOneHandler())
-    result = pipeline.run(3)
-    assert result == 4  # AddOneHandler runs, SkipHandler ignored
-
-
-def test_pipeline_execution_order():
+def test_pipeline_passes_original_when_pass_result_false():
     tracker = TrackingHandler()
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=False)
-    pipeline.add_handler(AddOneHandler())
-    pipeline.add_handler(tracker)
+    pipeline = HandlerPipeline(pass_result=False)
+    pipeline += AddOneHandler()
+    pipeline += tracker
     pipeline.run(10)
-    assert tracker.calls == [10]  # Not 11 — original input passed to tracker
+    # tracker saw the original 10, not 11
+    assert tracker.calls == [10]
 
 
-def test_pipeline_result_when_last_handler_is_none_but_no_short_circuit():
+def test_pipeline_last_none_result_without_exception():
     class NullHandler(Handler):
         def handle(self, data):
             return None
 
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=True)
-    pipeline.add_handler(AddOneHandler())
-    pipeline.add_handler(NullHandler())
+    pipeline = HandlerPipeline(pass_result=True)
+    pipeline += AddOneHandler()
+    pipeline += NullHandler()
 
-    result = pipeline.run(5)
-    assert result is None  # Last result is None, but pipeline ran fully
+    # No StopPipeline raised, so last returned value—even if None—is returned
+    assert pipeline.run(5) is None
 
 
-def test_pipeline_result_is_original_when_pass_result_false():
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=False)
-    pipeline.add_handler(AddOneHandler())
-    pipeline.add_handler(MultiplyHandler())
-    result = pipeline.run(7)
-    assert result == 14  # Multiply(7)
+def test_pipeline_stop_with_custom_value():
+    pipeline = HandlerPipeline(pass_result=True)
+    pipeline += StopWithValueHandler("boom")
+    pipeline += AddOneHandler()  # should never run
 
+    assert pipeline.run(123) == "boom"
 
 
 # ---------- async test cases ----------
-
 
 class SyncAddOne(Handler):
     def handle(self, data):
@@ -130,33 +124,48 @@ class AsyncMultiply(AsyncHandler):
 class AsyncStopIfNegative(AsyncHandler):
     async def handle(self, data):
         if data < 0:
-            return None
+            raise StopPipeline()
         return data
 
-async def test_async_pipeline_pass_result_true_short_circuit_false():
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=True)
+
+class AsyncStopWithValue(AsyncHandler):
+    def __init__(self, value):
+        self.value = value
+
+    async def handle(self, data):
+        raise StopPipeline(self.value)
+
+
+async def test_async_pipeline_pass_result_true():
+    pipeline = HandlerPipeline(pass_result=True)
     pipeline += SyncAddOne()
     pipeline += AsyncMultiply()
     result = await pipeline.run_async(3)
-    assert result == (3 + 1) * 2  # 8
+    assert result == 8  # (3+1)*2
 
 
-async def test_async_pipeline_short_circuit_triggered():
-    pipeline = HandlerPipeline(short_circuit=True, pass_result=True)
+async def test_async_pipeline_stops_on_negative():
+    pipeline = HandlerPipeline(pass_result=True)
     pipeline += SyncAddOne()
     pipeline += AsyncStopIfNegative()
     pipeline += AsyncMultiply()
-    result = await pipeline.run_async(-2)  # -2+1 = -1 -> short-circuited b/c negative
-    assert result is None
 
-    result = await pipeline.run_async(0)  # (0 + 1) * 2
-    assert result == 2
+    # -2+1 = -1 -> StopPipeline -> None
+    assert await pipeline.run_async(-2) is None
+    # 0+1=1 -> continue -> 2
+    assert await pipeline.run_async(0) == 2
 
 
-async def test_async_pipeline_with_sync_only_handlers():
-    pipeline = HandlerPipeline(short_circuit=False, pass_result=True)
+async def test_async_pipeline_stop_with_value():
+    pipeline = HandlerPipeline(pass_result=True)
+    pipeline += AsyncStopWithValue("async")
+    pipeline += AsyncMultiply()  # should never run
+
+    assert await pipeline.run_async(999) == "async"
+
+
+async def test_async_pipeline_with_sync_only():
+    pipeline = HandlerPipeline(pass_result=True)
     pipeline += SyncAddOne()
     pipeline += SyncAddOne()
-    result = await pipeline.run_async(10)
-    assert result == 12
-
+    assert await pipeline.run_async(10) == 12

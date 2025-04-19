@@ -12,3 +12,4 @@ Behavioral patterns define how objects interact and communicate. They help encap
    behavioral/event_emitter
    behavioral/handler_pipeline
    behavioral/observer
+   behavioral/strategy

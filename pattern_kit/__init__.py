@@ -2,7 +2,7 @@ from .architectural.service_locator import ServiceLocator
 
 from .behavioral.event import Event
 from .behavioral.event_emitter import EventEmitter
-from .behavioral.handler_pipeline import Handler, AsyncHandler, HandlerPipeline
+from .behavioral.handler_pipeline import Handler, AsyncHandler, HandlerPipeline, StopPipeline
 from .behavioral.observer import Observer, AsyncObserver, Observable
 
 from .creational.factory import Factory, register_factory
@@ -18,7 +18,7 @@ __all__ = [
     # Behavioral patterns
     "Event",
     "EventEmitter",
-    "Handler", "AsyncHandler", "HandlerPipeline",
+    "Handler", "AsyncHandler", "HandlerPipeline", "StopPipeline",
     "Observable", "Observer", "AsyncObserver",
 
     # Creational patterns

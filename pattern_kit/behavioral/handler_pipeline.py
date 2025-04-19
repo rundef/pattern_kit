@@ -2,6 +2,14 @@ from abc import ABC, abstractmethod
 from typing import Any, Union
 import inspect
 
+class StopPipeline(Exception):
+    """
+    Raised by handlers to exit the pipeline early.
+    Optionally carry a `result` to return from `run` or `run_async`.
+    """
+    def __init__(self, result: Any = None):
+        super().__init__()
+        self.result = result
 
 class Handler(ABC):
     """
@@ -39,13 +47,11 @@ class HandlerPipeline:
     A configurable pipeline of handlers.
 
     Args:
-        short_circuit (bool): If True, pipeline stops when a handler returns None.
         pass_result (bool): If True, result of each handler is passed to the next handler.
     """
 
-    def __init__(self, short_circuit: bool = False, pass_result: bool = False):
+    def __init__(self, pass_result: bool = False):
         self._handlers: list[Union[Handler, AsyncHandler]] = []
-        self._short_circuit = short_circuit
         self._pass_result = pass_result
 
     def add_handler(self, handler: Union[Handler, AsyncHandler]) -> None:
@@ -75,12 +81,17 @@ class HandlerPipeline:
         Run the pipeline.
         """
         result = current = data
-        for handler in self._handlers:
-            if handler.can_handle(current, **kwargs):
-                result = handler.handle(current, **kwargs)
-                if self._short_circuit and result is None:
-                    return None
-                current = result if self._pass_result else current
+        try:
+            for handler in self._handlers:
+                if handler.can_handle(current, **kwargs):
+                    result = handler.handle(current, **kwargs)
+
+                    if self._pass_result:
+                        current = result
+
+        except StopPipeline as stop:
+            return stop.result
+
         return result
 
     async def run_async(self, data: Any, **kwargs) -> Any:
@@ -89,15 +100,20 @@ class HandlerPipeline:
         Supports both sync and async handlers transparently.
         """
         result = current = data
-        for handler in self._handlers:
-            if handler.can_handle(current, **kwargs):
-                method = getattr(handler, "handle", None)
-                if inspect.iscoroutinefunction(method):
-                    result = await method(current, **kwargs)
-                else:
-                    result = method(current, **kwargs)
 
-                if self._short_circuit and result is None:
-                    return None
-                current = result if self._pass_result else current
+        try:
+            for handler in self._handlers:
+                if handler.can_handle(current, **kwargs):
+                    method = getattr(handler, "handle", None)
+                    if inspect.iscoroutinefunction(method):
+                        result = await method(current, **kwargs)
+                    else:
+                        result = method(current, **kwargs)
+
+                    if self._pass_result:
+                        current = result
+
+        except StopPipeline as stop:
+            return stop.result
+
         return result
