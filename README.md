@@ -18,7 +18,7 @@ While many examples exist online, `pattern_kit` is designed as a pip-installable
 
 ---
 
-## Features
+## ✨ Features
 
 - Clean, idiomatic Python implementations
 - Supports both synchronous and asynchronous designs
@@ -29,17 +29,17 @@ While many examples exist online, `pattern_kit` is designed as a pip-installable
 
 ---
 
-## Installation
+## 📦 Installation
 
 ```bash
 pip install pattern_kit
 ```
 
-## Documentation
+## 📘 Documentation
 
 Full usage examples and pattern guides are available in the [official documentation](https://pattern-kit.readthedocs.io/en/latest/)
 
-## Quick Examples
+## ⚡ Quick Examples
 
 ### Singleton example (using decorator)
 
@@ -83,10 +83,10 @@ on_message("hello!")         # fire-and-forget
 await on_message.call_async("world")  # fully awaited
 ```
 
-## Who is this for?
+## 🧑‍💻 Who is this for?
 
 Python developers who want to structure their codebase better and apply solid, proven software architecture principles.
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues, suggest improvements, or submit pull requests.

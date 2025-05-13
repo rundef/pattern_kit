@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-  { name="Mickael Burguet", email="bash88@email.com" }
+  { name="Mickael Burguet" }
 ]
 keywords = [
   "python", "design patterns", "software architecture",
